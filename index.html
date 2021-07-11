@@ -61,10 +61,10 @@
         </div>
         <h2>Overview</h2>
         <div class="form-field">
-            <label>Custom Adler hochalden</label>
+            <label>Custom Adler hochladen</label>
             <input type="file" accept="image/*" @change="onAdlerFileChanged" />
             <div class="hint">
-                <a href="default_adler.png" target="_blank">Beispiel Adler</a><br/>
+                <a href="default_adler.svg" target="_blank">Beispiel Adler</a><br/>
                 <b>Hinweise für bestes Ergebnis:</b>
                 <ul>
                     <li>Transparenter Hintergrund</li>
@@ -80,7 +80,10 @@
         <button type="button" @click="download" style="padding: 1rem;">DOWNLOAD</button>
         <h2>Next Steps</h2>
         <ol>
-            <li>Bilder zu PAA konvertieren (z.B. mit <a href="https://paa.gruppe-adler.de" target="_blank">paa.gruppe-adler.de</a>)</li>
+            <li>ZIP enpacken</li>
+            <li>logo.png ist nur eine hochauflösende Kopie des Logos</li>
+            <li>Alle Bilder im Verzeichnis "mod" zu PAA konvertieren (z.B. mit <a href="https://paa.gruppe-adler.de" target="_blank">paa.gruppe-adler.de</a>)</li>
+            <li>Die konvertieren PAAs + die mod/mod.cpp in das Hauptverzeichnis deiner Mod schieben</li>
             <li>
                 <span>Falls du deinen Mod mit HEMTT baust sollten alle generierten Dateien in dem "files"-Feld in der "hemtt.toml"stehen:</span>
                 <pre style="margin-top: .25rem;">{{ hemttFilesExample }}</pre>

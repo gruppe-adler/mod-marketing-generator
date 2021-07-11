@@ -1,6 +1,7 @@
 import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.esm.browser.js'
 import { generateLogo } from './logo.js';
 import { generateOverview } from './overview.js';
+import { generatePseudoCustomAdler } from './pseudoCustomAdler.js';
 import { generateModCPP } from './modCPP.js';
 import { download } from './utils.js';
 import 'https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js';
@@ -18,14 +19,13 @@ new Vue({
             text: '',
             fontSize: 27,
         },
-        overviewAdler: undefined
-    },
-    created() {
-        fetch('./default_adler.png').then(res => res.blob()).then(blob => this.overviewAdler = blob);
+        uploadedOverviewAdler: undefined,
+        pseudoCustomAdler: undefined,
     },
     mounted() {
         this.redrawLogoPreview();
         this.redrawOverviewPreview();
+        this.recalculatePseudoCustomAdler();
     },
     methods: {
         /**
@@ -53,7 +53,7 @@ new Vue({
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
 
-            this.overviewAdler = files[0];
+            this.uploadedOverviewAdler = files[0];
             this.redrawOverviewPreview();
         },
     
@@ -61,8 +61,17 @@ new Vue({
          * Redraw overview picture preview
          */
         redrawOverviewPreview() {
+            if (!this.overviewAdler) return;
             const canvas = document.getElementById('overview-preview');
-            generateOverview(this.overviewAdler, { canvas });
+            generateOverview(this.overviewAdler, { canvas, text: this.fullName });
+        },
+
+        recalculatePseudoCustomAdler() {
+            const name = this.fullName;
+            generatePseudoCustomAdler(name).then(blob => {
+                if (this.fullName !== name) return;
+                this.pseudoCustomAdler = blob;
+            });
         },
         
         /**
@@ -78,17 +87,18 @@ new Vue({
          */
         async download() {
             const logoSmall = await fetch('./logo_small.png').then(res => res.blob());
-            const overview = await generateOverview(this.overviewAdler);
+            const overview = await generateOverview(this.overviewAdler, { text: this.fullName });
             const logo = await generateLogo(this.logo.text, { fontSize: this.logo.fontSize });
             const logoActive = await generateLogo(this.logo.text, { fontSize: this.logo.fontSize, active: true });
             const modCPP = generateModCPP(this.fullName, this.authors, this.gitHubRepo, this.description);
 
             const zip = new JSZip();
-            zip.file(`${NAMES.logoSmall}.png`, logoSmall);
-            zip.file(`${NAMES.overview}.png`, overview);
-            zip.file(`${NAMES.logo}.png`, logo);
-            zip.file(`${NAMES.logoActive}.png`, logoActive);
-            zip.file('mod.cpp', modCPP);
+            zip.file(`mod/${NAMES.logoSmall}.png`, logoSmall);
+            zip.file(`mod/${NAMES.overview}.png`, overview);
+            zip.file(`mod/${NAMES.logo}.png`, logo);
+            zip.file(`mod/${NAMES.logoActive}.png`, logoActive);
+            zip.file('mod/mod.cpp', modCPP);
+            zip.file('logo.png', this.overviewAdler);
 
             const blob = await zip.generateAsync({ type: 'blob' });
             
@@ -111,6 +121,10 @@ new Vue({
             ];
 
             return `files = [\n${files.map(f => `    "${f}"`).join(',\n')}\n]`
+        },
+        overviewAdler() {
+            if (this.uploadedOverviewAdler) return this.uploadedOverviewAdler;
+            return this.pseudoCustomAdler;
         }
     },
     watch: {
@@ -119,6 +133,10 @@ new Vue({
             handler() {
                 this.redrawLogoPreview();
             }
+        },
+        fullName() {
+            this.redrawOverviewPreview();
+            this.recalculatePseudoCustomAdler();
         },
         overviewAdler() {
             this.redrawOverviewPreview();
