@@ -18,7 +18,7 @@
             <div class="form-field">
                 <label>Modname in langer Form</label>
                 <input type="text" placeholder="Sling Helmet" v-model="fullName"/>
-                <span class="hint">Keine Abkürzung (also "Civilians" und nicht "Civs") und Leerzeichen bei mehreren Wörtern</span>
+                <span class="hint">Ohne "Gruppe Adler"<br/>Keine Abkürzung (also "Civilians" und nicht "Civs")<br/>Leerzeichen bei mehreren Wörtern</span>
             </div>
             <div class="form-field">
                 <label>Autoren</label>
@@ -35,22 +35,22 @@
                 <i v-else>Keine Autoren hinzugefügt</i>
             </div>
             <div class="form-field">
-                <label>GitHub Repository</label>
+                <label>GitHub Repository Name</label>
                 <input type="text" placeholder="grad_slingHelmet" v-model="gitHubRepo" />
                 <span class="hint">Nur Repository Name (<pre style="display: inline">github.com/gruppe-adler/</pre> wird automatisch vorgestellt)</span>
             </div>
             <div class="form-field">
                 <label>Kurzbeschreibung</label>
                 <textarea :placeholder="descriptionPlaceholder" rows="5" v-model="description"></textarea>
-                <span class="hint">Anfangend mit Modname in langer Form (Gruppe Adler Sling Helmet...)<br/>unterstützt <a href="https://community.bistudio.com/wiki/Structured_Text" target="_blank">Structured Text</a></span>
+                <span class="hint">Anfangend mit <i>"Gruppe Adler"</i> + Modname in langer Form (z.B.: "Gruppe Adler Sling Helmet is da SHIT.")<br/>unterstützt <a href="https://community.bistudio.com/wiki/Structured_Text" target="_blank">Structured Text</a></span>
             </div>
         </form>
         <h2>Logo</h2>
         <div class="form-field">
             <label>Logo Text</label>
             <div class="logo-group">
-                <textarea placeholder="MIN UI" rows="2" v-model="logo.text" style="resize: none;"></textarea>
-                <span style="grid-area: hint;" class="hint">Bis zu zwei Zeilen</span>
+                <textarea placeholder="CIVILIANS" rows="2" v-model="logo.text" style="resize: none;"></textarea>
+                <span style="grid-area: hint;" class="hint">Wenn möglich Modname in langer Form statt nur Abkürzung<br/>Bis zu zwei Zeilen</span>
                 <div class="form-field" style="grid-area: fontSize; margin-top: .75rem">
                     <label>Schriftgröße</label>
                     <input type="number" step="0.5" v-model="logo.fontSize" max="27" />
