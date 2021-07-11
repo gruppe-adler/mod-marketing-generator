@@ -32,6 +32,7 @@
                         <span @click="removeAuthor(a)" style="color: #d18d1f; font-size: 0.75em; cursor: pointer;">(Entfernen)</span>
                     </li>
                 </ul>
+                <i v-else>Keine Autoren hinzugefügt</i>
             </div>
             <div class="form-field">
                 <label>GitHub Repository</label>
@@ -62,7 +63,16 @@
         <div class="form-field">
             <label>Custom Adler hochalden</label>
             <input type="file" accept="image/*" @change="onAdlerFileChanged" />
-            <span class="hint">Logo mit zentriertem Schriftzug.<br/>Mindestens 960px hoch<br/>Oben und unten keine transparenten Ränder</span>
+            <div class="hint">
+                <a href="default_adler.png" target="_blank">Beispiel Adler</a><br/>
+                <b>Hinweise für bestes Ergebnis:</b>
+                <ul>
+                    <li>Transparenter Hintergrund</li>
+                    <li>Schriftzug im Bild zentriert</li>
+                    <li>Bild Mindestens 960px hoch</li>
+                    <li>Oben und unten keine Ränder</li>
+                </ul>
+            </div>
             <label style="margin-top: .75rem;">Vorschau</label>
             <canvas id="overview-preview"></canvas>
         </div>
