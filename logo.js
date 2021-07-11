@@ -71,10 +71,10 @@ export async function generateLogo (name, options = {}) {
 
     if (lines.length === 2) {
         const [line1, line2] = lines;
-        ctx.fillText(line1, 64, 92, 124, 55);
-        ctx.fillText(line2, 64, 120, 124, 55);
+        ctx.fillText(line1, 64, 92);
+        ctx.fillText(line2, 64, 120);
     } else {
-        ctx.fillText(lines[0], 64, 107, 124, 55);
+        ctx.fillText(lines[0], 64, 107);
     }
 
     ctx.drawImage(await ABOVE_DRAWABLE, 0, 0);
