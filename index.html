@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruppe Adler Mod Marketing</title>
+    <script defer type="module" src="index.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+</head>
+<body>
+    <style>
+        html, body {
+            font-size: 16px;
+            font-family: sans-serif;
+        }
+
+        a:visited,
+        a {
+            color: #d18d1f;
+            text-decoration: none;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: Oswald;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #app > * {
+            width: 30rem;
+            max-width: calc(100% - 2rem);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 1rem;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            row-gap: .125rem;
+        }
+
+        form textarea,
+        form input {
+            font-family: monospace;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .hint {
+            font-size: 0.7em;
+        }
+
+        .logo-group {
+            display: grid;
+            grid-column-gap: .25rem;
+            grid-template: 
+                "area logo" 1fr
+                "hint logo" auto
+                "fontSize logo" auto / 1fr auto;
+        }
+    </style>
+    <div id="app">
+        <h2>Allgemeines</h2>
+        <form>
+            <div class="form-field">
+                <label>Modname in langer Form</label>
+                <input type="text" placeholder="Sling Helmet" v-model="fullName"/>
+                <span class="hint">Keine Abkürzung (also "Civilians" und nicht "Civs") und Leerzeichen bei mehreren Wörtern</span>
+            </div>
+            <div class="form-field">
+                <label>Autoren</label>
+                <div style="display: grid; grid-template-columns: 1fr auto; grid-gap: .25rem;">
+                    <input type="text" placeholder="DerZade" v-model="author" @keydown.enter="addAuthor" />
+                    <button @click="addAuthor" type="button">Hinzufügen</button>
+                </div>
+                <ul v-if="authors.length > 0">
+                    <li v-for="a in authors">
+                        <span>{{ a }}</span>
+                        <span @click="removeAuthor(a)" style="color: #d18d1f; font-size: 0.75em; cursor: pointer;">(Entfernen)</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-field">
+                <label>GitHub Repository</label>
+                <input type="text" placeholder="grad_slingHelmet" v-model="gitHubRepo" />
+                <span class="hint">Nur Repository Name (<pre style="display: inline">github.com/gruppe-adler/</pre> wird automatisch vorgestellt)</span>
+            </div>
+            <div class="form-field">
+                <label>Kurzbeschreibung</label>
+                <textarea :placeholder="descriptionPlaceholder" rows="5" v-model="description"></textarea>
+                <span class="hint">Anfangend mit Modname in langer Form (Gruppe Adler Sling Helmet...)<br/>unterstützt <a href="https://community.bistudio.com/wiki/Structured_Text" target="_blank">Structured Text</a></span>
+            </div>
+        </form>
+        <h2>Logo</h2>
+        <div class="form-field">
+            <label>Logo Text</label>
+            <div class="logo-group">
+                <textarea placeholder="MIN UI" rows="2" v-model="logoText" style="resize: none;"></textarea>
+                <span style="grid-area: hint;" class="hint">Bis zu zwei Zeilen</span>
+                <div class="form-field" style="grid-area: fontSize; margin-top: .75rem">
+                    <label>Schriftgröße</label>
+                    <input type="number" step="0.5" v-model="logoFontSize" max="27" />
+                    <span class="hint">Nur verändern, wenn Platz nicht ausreicht!</span>
+                </div>
+                <canvas id="logo" height="128" width="128" style="grid-area: logo;"></canvas>
+            </div>
+        </div>
+        <h2>Overview</h2>
+        <div class="form-field">
+            <label>Custom Adler hochalden</label>
+            <input type="file" accept="image/*" @change="onFileChanged" />
+            <span class="hint">Logo mit zentriertem Schriftzug.<br/>Mindestens 960px hoch<br/>Oben und unten keine transparenten Ränder</span>
+            <label style="margin-top: .75rem;">Vorschau</label>
+            <canvas id="overview" height="1024" width="2048"></canvas>
+        </div>
+        <h1></h1>
+        <button type="button" @click="download" style="padding: 1rem;">DOWNLOAD</button>
+        <h2>Next Steps</h2>
+        <ol>
+            <li>Bilder zu PAA konvertieren (z.B. mit <a href="https://paa.gruppe-adler.de" target="_blank">paa.gruppe-adler.de</a>)</li>
+            <li>
+                <span>Falls du deinen Mod mit HEMTT baust sollten alle generierten Dateien in dem "files"-Feld in der "hemtt.toml"stehen:</span>
+                <pre style="margin-top: .25rem;">
+files = [
+    "mod.cpp",
+    "logo_ca.paa",
+    "logo_active_ca.paa",
+    "logo_small_ca.paa",
+    "overview_co.paa"
+]
+                </pre>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>
