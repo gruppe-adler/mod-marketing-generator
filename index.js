@@ -45,7 +45,7 @@ var app3 = new Vue({
             generateLogo(this.logoText, { fontSize: this.logoFontSize })
         },
         async download() {
-            const logoSmall = await fetch('/logo_small_ca.png').then(res => res.blob());
+            const logoSmall = await fetch('./logo_small_ca.png').then(res => res.blob());
             const overview = await generateOverview(this.customAdler);
             const logo = await generateLogo(this.logoText, { fontSize: this.logoFontSize });
             const logoActive = await generateLogo(this.logoText, { fontSize: this.logoFontSize, active: true });
