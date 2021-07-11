@@ -2,19 +2,23 @@ import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.esm.browser.js
 import { generateLogo } from './logo.js';
 import { generateOverview } from './overview.js';
 import { generateModCPP } from './modCPP.js';
+import { download } from './utils.js';
 import 'https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js';
+import { NAMES } from './const.js';
 
-var app3 = new Vue({
-    el: document.getElementById('app'),
+new Vue({
+    el: '#app',
     data: {
         fullName: '',
         authors: [],
         gitHubRepo: '',
         description: '',
         author: '',
-        logoText: '',
-        logoFontSize: 27,
-        customAdler: undefined
+        logo: {
+            text: '',
+            fontSize: 27,
+        },
+        overviewAdler: undefined
     },
     computed: {
         descriptionPlaceholder() {
@@ -24,74 +28,89 @@ var app3 = new Vue({
         }
     },
     methods: {
+        /**
+         * Callback of "add"-button or KeyDown.Enter of
+         * author input
+         */
         addAuthor() {
             this.authors.push(this.author);
             this.author = '';
         },
+
+        /**
+         * Remove author from list
+         * @param {string} author Author to remove
+         */
         removeAuthor(author) {
             this.authors = this.authors.filter(x => x !== author);
         },
-        onFileChanged(e) {
+
+        /**
+         * Change callback of adler file input
+         * @param {InputEvent} e 
+         */
+        onAdlerFileChanged(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
 
-            this.customAdler = files[0];
-            this.redrawOverview();
+            this.overviewAdler = files[0];
+            this.redrawOverviewPreview();
         },
-        redrawOverview() {
-            generateOverview(this.customAdler);
+    
+        /**
+         * Redraw overview picture preview
+         */
+        redrawOverviewPreview() {
+            const canvas = document.getElementById('overview-preview');
+            generateOverview(this.overviewAdler, { canvas });
         },
-        redrawLogo() {
-            generateLogo(this.logoText, { fontSize: this.logoFontSize })
+        
+        /**
+         * Redraw logo preview
+         */
+        redrawLogoPreview() {
+            const canvas = document.getElementById('logo-preview');
+            generateLogo(this.logo.text, { fontSize: this.logo.fontSize, canvas })
         },
+
+        /**
+         * Callback of "download"-button
+         */
         async download() {
-            const logoSmall = await fetch('./logo_small_ca.png').then(res => res.blob());
-            const overview = await generateOverview(this.customAdler);
-            const logo = await generateLogo(this.logoText, { fontSize: this.logoFontSize });
-            const logoActive = await generateLogo(this.logoText, { fontSize: this.logoFontSize, active: true });
-            const modCPP = generateModCPP({ 
-                fullName: this.fullName,
-                authors: this.authors,
-                gitHubRepo: this.gitHubRepo,
-                description: this.description,
-            });
+            const logoSmall = await fetch('./logo_small.png').then(res => res.blob());
+            const overview = await generateOverview(this.overviewAdler);
+            const logo = await generateLogo(this.logo.text, { fontSize: this.logo.fontSize });
+            const logoActive = await generateLogo(this.logo.text, { fontSize: this.logo.fontSize, active: true });
+            const modCPP = generateModCPP(this.fullName, this.authors, this.gitHubRepo, this.description);
 
             const zip = new JSZip();
-            zip.file('logo_small_ca.png', logoSmall);
-            zip.file('overview_co.png', overview);
-            zip.file('logo_ca.png', logo);
-            zip.file('logo_active_ca.png', logoActive);
+            zip.file(`${NAMES.logoSmall}.png`, logoSmall);
+            zip.file(`${NAMES.overview}.png`, overview);
+            zip.file(`${NAMES.logo}.png`, logo);
+            zip.file(`${NAMES.logoActive}.png`, logoActive);
             zip.file('mod.cpp', modCPP);
 
             const blob = await zip.generateAsync({ type: 'blob' });
-
-            const url = URL.createObjectURL(blob);
-
-            const link = document.createElement('a');
-            link.download = 'gruppe_adler_mod_marketing.zip';
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            link.remove();
-        
-            // we revoke the url only after a delay because old Edge can't handle it otherwise
-            window.setTimeout(() => URL.revokeObjectURL(url), 200);
+            
+            download('gruppe_adler_mod_marketing.zip', blob)
         }
     },
     mounted() {
-        this.redrawLogo();
-        this.redrawOverview();
+        this.redrawLogoPreview();
+        this.redrawOverviewPreview();
+    },
+    created() {
+        fetch('./default_adler.png').then(res => res.blob()).then(blob => this.overviewAdler = blob);
     },
     watch: {
-        logoText() {
-            this.redrawLogo();
+        logo: {
+            deep: true,
+            handler() {
+                this.redrawLogoPreview();
+            }
         },
-        logoFontSize() {
-            this.redrawLogo();
-        },
-        customAdler() {
-            this.redrawOverview();
+        overviewAdler() {
+            this.redrawOverviewPreview();
         }
     }
 });

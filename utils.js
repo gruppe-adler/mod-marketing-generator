@@ -1,9 +1,9 @@
-
 /**
+ * Convert Blob to Image
  * @param {Blob} blob
- * @returns {Promise<HTMLImageElement|ImageBitmap>} Drawable
+ * @returns {Promise<Image>} Image
  */
-export async function blobToDrawable(blob) {
+export async function blobToImage(blob) {
     const url = URL.createObjectURL(blob);
     try {
         const img = new Image();
@@ -27,4 +27,24 @@ export async function blobToDrawable(blob) {
     } finally {
         URL.revokeObjectURL(url);
     }
+}
+
+/**
+ * Download a file
+ * @param {string} name Name of file
+ * @param {Blob} blob Blob to download
+ */
+export function download(name, blob) {
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.download = name;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    link.remove();
+
+    // we revoke the url only after a delay because old Edge can't handle it otherwise
+    window.setTimeout(() => URL.revokeObjectURL(url), 200);
 }

@@ -1,15 +1,14 @@
-
+import { NAMES } from './const.js';
 
 const OVERVIEW_PREFIX = `<br/><t align='center' size='0.75'>Visit Gruppe Adler on <t href='https://gruppe-adler.de/'>our Website</t> | <t href='http://discord.gruppe-adler.de'>Discord</t> | <t href='https://www.youtube.com/user/gruppeadler'>YouTube</t> | <t href='https://twitter.com/Gruppe_Adler'>Twitter</t></t><br/><br/>`
 
 /**
- * @param {Object} config Config
- * @param {string} config.fullName Modname in langer Form (keine Abkürzung also "Civilians" und nicht "Civs"; Spaces bei mehreren Wörtern)
- * @param {string[]} config.authors Authors
- * @param {string} config.gitHubRepo GitHub Repository 
- * @param {string} config.description Description
+ * @param {string} fullName Modname in langer Form (keine Abkürzung also "Civilians" und nicht "Civs"; Spaces bei mehreren Wörtern)
+ * @param {string[]} authors Authors
+ * @param {string} gitHubRepo GitHub Repository 
+ * @param {string} description Description
  */
-export function generateModCPP({ fullName, authors, gitHubRepo, description }) {
+export function generateModCPP(fullName, authors, gitHubRepo, description) {
 
     /**
      * @type {Map<string, string|number|unknown[]>}
@@ -19,18 +18,18 @@ export function generateModCPP({ fullName, authors, gitHubRepo, description }) {
 
     attributes.set('name', prefixedName);
     attributes.set('author', authors.join(', '));
-    attributes.set('logo', 'logo_ca.paa');
-    attributes.set('logoOver', 'logo_active_ca.paa');
+    attributes.set('logo', `${NAMES.logo}.paa`);
+    attributes.set('logoOver', `${NAMES.logoActive}.paa`);
     attributes.set('tooltip', prefixedName);
     attributes.set('tooltipOwned', prefixedName);
-    attributes.set('picture', 'overview_co.paa');
+    attributes.set('picture', `${NAMES.overview}.paa`);
     attributes.set('actionName', 'GitHub');
     attributes.set('action', `https://github.com/gruppe-adler/${gitHubRepo}`);
     attributes.set('overview', `${OVERVIEW_PREFIX}${description}`);
     attributes.set('hideName', 0);
     attributes.set('hidePicture', 0);
     attributes.set('dlcColor[]', [0.8196, 0.5529, 0.1216, 1]);
-    attributes.set('logoSmall', 'logo_small_ca.paa');
+    attributes.set('logoSmall', `${NAMES.logoSmall}.paa`);
     
     const content = Array.from(attributes.entries()).map(([name, value]) => `${name} = ${encodeAttributeValue(value)};`).join('\n');
 

@@ -1,4 +1,4 @@
-import { blobToDrawable } from "./image.js";
+import { blobToImage } from "./utils.js";
 
 const BELOW_SVG = `
 <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,49 +25,50 @@ const ACTIVE_SVG = `
 </svg>
 `;
 
-
 /**
+ * Convert SVG string to Image
  * @param {string} svgStr
- * @returns {Promise<HTMLImageElement|ImageBitmap>} Drawable
+ * @returns {Promise<HTMLImageElement>} Image
  */
  async function loadSVG(svgStr) {
     const blob = new Blob([svgStr], { type: 'image/svg+xml' });
 
-    return blobToDrawable(blob);
+    return blobToImage(blob);
 }
 
 const BELOW_DRAWABLE = loadSVG(BELOW_SVG)
 const ABOVE_DRAWABLE = loadSVG(ABOVE_SVG)
 const ACTIVE_DRAWABLE = loadSVG(ACTIVE_SVG)
 
-const CANVAS_ID = 'logo';
+export const DEFAULT_LOGO_TEXT_SIZE = 27;
+export const LOGO_SIZE = 128;
 
 /**
- * 
- * @param {string} name
- * @param {Object} options
- * @param {boolean} [options.active]
- * @param {number} [options.fontSize]
+ * Generate logo
+ * @param {string} text Logo text
+ * @param {Object} [options] Options
+ * @param {boolean} [options.active] Whether t generate active state (hover state)
+ * @param {number} [options.fontSize] Font size of logo (default 27)
+ * @param {HTMLCanvasElement} [options.canvas] Canvas to draw logo onto
  * @returns {Promise<Blob>}
  */
-export async function generateLogo (name, options = {}) {
+export async function generateLogo (text, options = {}) {
+    const lines = text.split('\n').map(x => x.trim().toUpperCase());
 
-    const lines = name.split('\n').map(x => x.trim().toUpperCase());
-
-    /**
-     * @type {HTMLCanvasElement}
-     */
-    const canvas = document.getElementById(CANVAS_ID);
+    const canvas = options.canvas ?? document.createElement('canvas');
+    canvas.height = LOGO_SIZE;
+    canvas.width = LOGO_SIZE;
+    
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
     ctx.fillStyle = '#FFFFFF';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.font = `${options.fontSize ?? 27}px Oswald`;
+    ctx.font = `${options.fontSize ?? DEFAULT_LOGO_TEXT_SIZE}px Oswald`;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.drawImage(await BELOW_DRAWABLE, 0, 0);
-
 
     if (lines.length === 2) {
         const [line1, line2] = lines;
@@ -79,11 +80,11 @@ export async function generateLogo (name, options = {}) {
 
     ctx.drawImage(await ABOVE_DRAWABLE, 0, 0);
 
-    if (options.active) {
-        ctx.drawImage(await ACTIVE_DRAWABLE, 0, 0);
-    }
+    if (options.active) ctx.drawImage(await ACTIVE_DRAWABLE, 0, 0);
 
     return new Promise((resolve) => {
         canvas.toBlob(resolve, 'image/png', 1);
+    }).finally(() => {
+        if (options.canvas === undefined) canvas.remove();
     });
 }
