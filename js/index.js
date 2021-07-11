@@ -20,12 +20,12 @@ new Vue({
         },
         overviewAdler: undefined
     },
-    computed: {
-        descriptionPlaceholder() {
-            if (this.fullName.length === 0) return 'Gruppe Adler Sling Helmet...';
-
-            return `Gruppe Adler ${this.fullName}...`;
-        }
+    created() {
+        fetch('./default_adler.png').then(res => res.blob()).then(blob => this.overviewAdler = blob);
+    },
+    mounted() {
+        this.redrawLogoPreview();
+        this.redrawOverviewPreview();
     },
     methods: {
         /**
@@ -95,12 +95,23 @@ new Vue({
             download('gruppe_adler_mod_marketing.zip', blob)
         }
     },
-    mounted() {
-        this.redrawLogoPreview();
-        this.redrawOverviewPreview();
-    },
-    created() {
-        fetch('./default_adler.png').then(res => res.blob()).then(blob => this.overviewAdler = blob);
+    computed: {
+        descriptionPlaceholder() {
+            if (this.fullName.length === 0) return 'Gruppe Adler Sling Helmet...';
+
+            return `Gruppe Adler ${this.fullName}...`;
+        },
+        hemttFilesExample() {
+            const files = [
+                'mod.cpp',
+                `${NAMES.logoActive}.paa`,
+                `${NAMES.logo}.paa`,
+                `${NAMES.overview}.paa`,
+                `${NAMES.logoSmall}.paa`
+            ];
+
+            return `files = [\n${files.map(f => `    "${f}"`).join(',\n')}\n]`
+        }
     },
     watch: {
         logo: {
