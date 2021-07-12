@@ -86,14 +86,14 @@ new Vue({
          * Callback of "download"-button
          */
         async download() {
-            const logoSmall = await fetch('./logo_small.png').then(res => res.blob());
+            const logoSmall = await fetch('./logo_small.svg').then(res => res.blob());
             const overview = await generateOverview(this.overviewAdler, { text: this.fullName });
             const logo = await generateLogo(this.logo.text, { fontSize: this.logo.fontSize });
             const logoActive = await generateLogo(this.logo.text, { fontSize: this.logo.fontSize, active: true });
             const modCPP = generateModCPP(this.fullName, this.authors, this.gitHubRepo, this.description);
 
             const zip = new JSZip();
-            zip.file(`mod/${NAMES.logoSmall}.png`, logoSmall);
+            zip.file(`mod/${NAMES.logoSmall}.svg`, logoSmall);
             zip.file(`mod/${NAMES.overview}.png`, overview);
             zip.file(`mod/${NAMES.logo}.png`, logo);
             zip.file(`mod/${NAMES.logoActive}.png`, logoActive);
