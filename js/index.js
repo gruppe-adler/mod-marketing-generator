@@ -3,7 +3,7 @@ import { generateLogo } from './logo.js';
 import { generateOverview } from './overview.js';
 import { generatePseudoCustomAdler } from './pseudoCustomAdler.js';
 import { generateModCPP } from './modCPP.js';
-import { download } from './utils.js';
+import { blobToImage, download } from './utils.js';
 import 'https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js';
 import { NAMES } from './const.js';
 
@@ -19,6 +19,7 @@ new Vue({
             text: '',
             fontSize: 27,
         },
+        logoPreviewURL: null,
         uploadedOverviewAdler: undefined,
         pseudoCustomAdler: undefined,
     },
@@ -77,9 +78,11 @@ new Vue({
         /**
          * Redraw logo preview
          */
-        redrawLogoPreview() {
-            const canvas = document.getElementById('logo-preview');
-            generateLogo(this.logo.text, { fontSize: this.logo.fontSize, canvas })
+        async redrawLogoPreview() {
+            const logo = await generateLogo(this.logo.text, { fontSize: this.logo.fontSize });
+
+            if (this.logoPreviewURL !== null) URL.revokeObjectURL(this.logoPreviewURL);
+            this.logoPreviewURL = URL.createObjectURL(logo)
         },
 
         /**
@@ -95,8 +98,8 @@ new Vue({
             const zip = new JSZip();
             zip.file(`mod/${NAMES.logoSmall}.svg`, logoSmall);
             zip.file(`mod/${NAMES.overview}.png`, overview);
-            zip.file(`mod/${NAMES.logo}.png`, logo);
-            zip.file(`mod/${NAMES.logoActive}.png`, logoActive);
+            zip.file(`mod/${NAMES.logo}.svg`, logo);
+            zip.file(`mod/${NAMES.logoActive}.svg`, logoActive);
             zip.file('mod/mod.cpp', modCPP);
             zip.file('logo.png', this.overviewAdler);
 
