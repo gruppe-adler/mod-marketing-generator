@@ -7,6 +7,13 @@ import { blobToImage, download } from './utils.js';
 import 'https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js';
 import { NAMES } from './const.js';
 
+const extensionsByMimeType = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/svg+xml': 'svg',
+    'image/webp	': 'webp',
+};
+
 new Vue({
     el: '#app',
     data: {
@@ -101,7 +108,7 @@ new Vue({
             zip.file(`mod/${NAMES.logo}.svg`, logo);
             zip.file(`mod/${NAMES.logoActive}.svg`, logoActive);
             zip.file('mod/mod.cpp', modCPP);
-            zip.file('logo.png', this.overviewAdler);
+            zip.file(`logo.${extensionsByMimeType[this.overviewAdler.type]}`, this.overviewAdler);
 
             const blob = await zip.generateAsync({ type: 'blob' });
             
