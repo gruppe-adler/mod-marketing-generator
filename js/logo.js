@@ -15,6 +15,10 @@ const BEAK_PATH = `
 
 export const DEFAULT_LOGO_TEXT_SIZE = 27;
 
+const LOGO_SIZE = 128; // DON'T CHANGE ME WITHOUT UPDATING THE PATHS ABOVE
+const TOP_LINE_Y = 95;
+const BOTTOM_LINE_Y = 125;
+
 /**
  * Generate logo
  * @param {string} text Logo text
@@ -35,18 +39,18 @@ export async function generateLogo (text, options = {}) {
     let textPaths = [];
     if (lines.length === 2) {
         const [line1, line2] = lines;
-        const { path: path1 } = await textToSVG(line1, { x: 64, y: 95, ...svgOptions });
-        const { path: path2  } = await textToSVG(line2, { x: 64, y: 122, ...svgOptions });
+        const { path: path1 } = await textToSVG(line1, { x: LOGO_SIZE / 2, y: TOP_LINE_Y, ...svgOptions });
+        const { path: path2  } = await textToSVG(line2, { x: LOGO_SIZE / 2, y: BOTTOM_LINE_Y, ...svgOptions });
         textPaths.push(path1, path2);
     } else {
         const line = lines[0];
 
-        const { path } = await textToSVG(line, { x: 64, y: 110, ...svgOptions });
+        const { path } = await textToSVG(line, { x: LOGO_SIZE / 2, y: (TOP_LINE_Y + BOTTOM_LINE_Y) / 2, ...svgOptions });
         textPaths.push(path);
     }
 
     const svgString = `
-    <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="${LOGO_SIZE}" height="${LOGO_SIZE}" viewBox="0 0 ${LOGO_SIZE} ${LOGO_SIZE}" fill="none" xmlns="http://www.w3.org/2000/svg">
         ${BACKGROUND_PATH}
         ${textPaths.join('\n')}
         ${BEAK_PATH}
