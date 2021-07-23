@@ -1,5 +1,5 @@
-import { waitOnImageLoad } from "./utils.js";
-import { textToSVG } from "./textToSVG.js";
+import TextToSVG from 'text-to-svg';
+import { textToSVG } from './textToSVG';
 
 const SHADOW_OFFSET = 16;
 const BOX_HEIGHT = 256;
@@ -131,53 +131,43 @@ const ADLER = `
  * @param {string} text Text
  * @returns {Promise<Blob>}
  */
-export async function generatePseudoCustomAdler(text = '') {
+export async function generatePseudoCustomAdler (text = ''): Promise<Blob> {
     let textSVG = '';
     if (text !== '') {
         textSVG = await generateText(text, ADLER_WIDTH, ADLER_HEIGHT);
     }
 
     const svgString = `
-    <svg width="${ADLER_WIDTH}" height="${ADLER_HEIGHT}" viewBox="0 0 ${ADLER_WIDTH} ${ADLER_WIDTH}" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="${ADLER_WIDTH}" height="${ADLER_HEIGHT}" viewBox="0 0 ${ADLER_WIDTH} ${ADLER_HEIGHT}" fill="none" xmlns="http://www.w3.org/2000/svg">
         ${ADLER}
         ${textSVG}
     </svg>
     `;
 
     return new Blob([svgString], { type: 'image/svg+xml' });
-
 }
 
-/**
- * @param {string} text
- * @param {number} width SVG width
- * @param {number} height SVG height
- * @returns {string} SVG paths / rects
- */
-async function generateText(text, width, height) {
-
+async function generateText (text: string, width: number, height: number): Promise<string> {
     text = text.toUpperCase().trim();
-    
+
     const svgOptions = {
         fontSize: 220,
-        anchor: 'center middle',
-        attributes: { fill: 'white' }
-    }
+        anchor: 'center middle' as TextToSVG.Anchor,
+        attributes: { fill: 'white', transform: '' }
+    };
     const { metrics } = await textToSVG(text, svgOptions);
 
     const boxWidth = Math.max(metrics.width + 192, MIN_BOX_WIDTH);
 
-    
     const rotate = `rotate(-15 ${width / 2} ${height / 2})`;
     svgOptions.attributes.transform = rotate;
 
-    const boxX = (width - boxWidth) /2;
-    const boxY = (height - BOX_HEIGHT) /2;
+    const boxX = (width - boxWidth) / 2;
+    const boxY = (height - BOX_HEIGHT) / 2;
 
-    const boxShadow = `<rect x="${boxX + SHADOW_OFFSET}" y="${boxY + SHADOW_OFFSET}" width="${boxWidth}" height="${BOX_HEIGHT}" fill="rgba(0, 0, 0, 0.5)" transform="${rotate}" />`
-    const box = `<rect x="${boxX}" y="${boxY}" width="${boxWidth}" height="${BOX_HEIGHT}"  fill="#D18D1F" transform="${rotate}" />`
+    const boxShadow = `<rect x="${boxX + SHADOW_OFFSET}" y="${boxY + SHADOW_OFFSET}" width="${boxWidth}" height="${BOX_HEIGHT}" fill="rgba(0, 0, 0, 0.5)" transform="${rotate}" />`;
+    const box = `<rect x="${boxX}" y="${boxY}" width="${boxWidth}" height="${BOX_HEIGHT}"  fill="#D18D1F" transform="${rotate}" />`;
 
-    
     const { path } = await textToSVG(text, { ...svgOptions, x: boxX + boxWidth / 2, y: boxY + BOX_HEIGHT / 2 * 0.92 });
     const svgString = `
     ${boxShadow}

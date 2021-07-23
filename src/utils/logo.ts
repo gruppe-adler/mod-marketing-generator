@@ -1,4 +1,5 @@
-import { textToSVG } from "./textToSVG.js";
+import TextToSVG from 'text-to-svg';
+import { textToSVG } from './textToSVG';
 
 const EYE_PATH = '<path fill-rule="evenodd" clip-rule="evenodd" d="M93.5 19C97.9183 19 101.5 15.4183 101.5 11C101.5 6.58172 97.9183 3 93.5 3C89.0817 3 85.5 6.58172 85.5 11C85.5 15.4183 89.0817 19 93.5 19ZM93.5 16C96.2614 16 98.5 13.7614 98.5 11C98.5 8.23858 96.2614 6 93.5 6C90.7386 6 88.5 8.23858 88.5 11C88.5 13.7614 90.7386 16 93.5 16Z" fill="white"/>';
 const BACKGROUND_PATH = '<path d="M2 10C2 5.58172 5.58172 2 10 2H118C122.418 2 126 5.58172 126 10V118C126 122.418 122.418 126 118 126H10C5.58172 126 2 122.418 2 118V10Z" fill="#010103"/>';
@@ -19,6 +20,11 @@ const LOGO_SIZE = 128; // DON'T CHANGE ME WITHOUT UPDATING THE PATHS ABOVE
 const TOP_LINE_Y = 95;
 const BOTTOM_LINE_Y = 125;
 
+interface Options {
+    active?: boolean;
+    fontSize?: number;
+}
+
 /**
  * Generate logo
  * @param {string} text Logo text
@@ -27,20 +33,20 @@ const BOTTOM_LINE_Y = 125;
  * @param {number} [options.fontSize] Font size of logo (default 27)
  * @returns {Promise<Blob>}
  */
-export async function generateLogo (text, options = {}) {
+export async function generateLogo (text: string, options = {} as Options): Promise<Blob> {
     const lines = text.split('\n').map(x => x.trim().toUpperCase());
 
     const svgOptions = {
         fontSize: options.fontSize ?? DEFAULT_LOGO_TEXT_SIZE,
-        anchor: 'center bottom',
+        anchor: 'center bottom' as TextToSVG.Anchor,
         attributes: { fill: 'white' }
-    }
+    };
 
-    let textPaths = [];
+    const textPaths: string[] = [];
     if (lines.length === 2) {
         const [line1, line2] = lines;
         const { path: path1 } = await textToSVG(line1, { x: LOGO_SIZE / 2, y: TOP_LINE_Y, ...svgOptions });
-        const { path: path2  } = await textToSVG(line2, { x: LOGO_SIZE / 2, y: BOTTOM_LINE_Y, ...svgOptions });
+        const { path: path2 } = await textToSVG(line2, { x: LOGO_SIZE / 2, y: BOTTOM_LINE_Y, ...svgOptions });
         textPaths.push(path1, path2);
     } else {
         const line = lines[0];

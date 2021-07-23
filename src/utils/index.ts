@@ -1,27 +1,10 @@
-/**
- * Convert Blob to Image
- * @param {Blob} blob
- * @returns {Promise<HTMLImageElement>} Image
- */
-export async function blobToImage(blob) {
-    const url = URL.createObjectURL(blob);
-    try {
-        const img = new Image();
-        img.src = url;
-
-        await waitOnImageLoad(img);
-        return img;
-    } finally {
-        URL.revokeObjectURL(url);
-    }
-}
 
 /**
  * Download a file
  * @param {string} name Name of file
  * @param {Blob} blob Blob to download
  */
-export function download(name, blob) {
+export function download (name: string, blob: Blob): void {
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
@@ -37,12 +20,29 @@ export function download(name, blob) {
 }
 
 /**
- * Wait until given image is loaded so it can be used with drawImage etc.
- * @param {Image} img Image
+ * Convert Blob to Image
+ * @param {Blob} blob
+ * @returns {Promise<HTMLImageElement>} Image
  */
-export async function waitOnImageLoad(img) {
+export async function blobToImage (blob: Blob): Promise<HTMLImageElement> {
+    const url = URL.createObjectURL(blob);
+    try {
+        const img = new Image();
+        img.src = url;
+
+        await waitOnImageLoad(img);
+        return img;
+    } finally {
+        URL.revokeObjectURL(url);
+    }
+}
+
+/**
+ * Wait until given image is loaded so it can be used with drawImage etc.
+ */
+async function waitOnImageLoad (img: HTMLImageElement): Promise<void> {
     img.decoding = 'async';
-    const loaded = new Promise((resolve, reject) => {
+    const loaded = new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
         img.onerror = () => reject(Error('Image loading error'));
     });
