@@ -69,7 +69,7 @@ export default class Done extends Vue {
         download('gruppe_adler_mod_marketing.zip', blob);
     }
 
-    public created () {
+    public created (): void {
         const customAdlerPromise = this.values.uploadedAdler ? Promise.resolve(this.values.uploadedAdler) : generatePseudoCustomAdler(this.values.fullName);
 
         this.promise = Promise.all([
