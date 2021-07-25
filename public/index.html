@@ -3,12 +3,31 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css?family=Oswald|Source+Sans+Pro|Source+Code+Pro|Material+Icons&display=swap" rel="stylesheet">
+
+    <!-- SEO Meta -->
+    <meta itemprop="name" content="<%= htmlWebpackPlugin.options.title %>">
+    <meta itemprop="description" content="<%= htmlWebpackPlugin.options.description %>">
+    
+    <!-- Twitter Rich Embed -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@gruppe_adler">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="<%= htmlWebpackPlugin.options.title %>">
+    <meta property="og:type" content="object">
+    <meta property="og:url" content="https://mod-marketing.gruppe-adler.de">
+    <meta property="og:image" content="https://mod-marketing.gruppe-adler.de/<%=require('@/assets/img/logo.png')%>">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:site_name" content="Gruppe Adler">
+    <meta property="og:description" content="<%= htmlWebpackPlugin.options.description %>">
   </head>
   <body>
     <noscript>
