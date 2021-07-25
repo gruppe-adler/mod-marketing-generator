@@ -33,15 +33,6 @@
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <script>
-      (function(){
-        const redirect = sessionStorage.getItem('spa-redirect');
-        if (redirect && redirect != location.href) {
-            sessionStorage.removeItem('spa-redirect');
-            history.replaceState(null, null, redirect);
-        }
-      })();
-    </script>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
