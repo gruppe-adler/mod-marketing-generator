@@ -39,7 +39,10 @@ import { NAMES } from '@/utils/const';
 import { generateOverview } from '@/utils/overview';
 import { generateSteamLogo } from '@/utils/steam';
 import { generateGitHubSocialPreview } from '@/utils/gitHubSocialPreview';
-import { download } from '@/utils';
+import { blobToImage, download } from '@/utils';
+import initAFF from '@/utils/aff';
+
+const affPromise = initAFF();
 
 @Options({})
 export default class Done extends Vue {
@@ -53,11 +56,10 @@ export default class Done extends Vue {
         const [logoSmall, logo, logoActive, overview, steamLogo, githubSocialPreview, modCPP, customAdler] = await this.promise;
 
         const zip = new JSZip();
-        // TODO: Change file extensiosn to .paa
-        zip.file(`mod/${NAMES.logoSmall}.svg`, logoSmall);
-        zip.file(`mod/${NAMES.overview}.png`, overview);
-        zip.file(`mod/${NAMES.logo}.svg`, logo);
-        zip.file(`mod/${NAMES.logoActive}.svg`, logoActive);
+        zip.file(`mod/${NAMES.logoSmall}.paa`, logoSmall);
+        zip.file(`mod/${NAMES.overview}.paa`, overview);
+        zip.file(`mod/${NAMES.logo}.paa`, logo);
+        zip.file(`mod/${NAMES.logoActive}.paa`, logoActive);
         zip.file('mod/mod.cpp', modCPP);
 
         zip.file('steam_logo.png', steamLogo);
@@ -99,9 +101,28 @@ export default class Done extends Vue {
         return `files = [\n${files.map(f => `    <span style="color: #a5d6ff;">"${f}"</span>`).join(',\n')}\n]`;
     }
 
+    private async blobToImageData (blob: Blob): Promise<ImageData> {
+        const img = await blobToImage(blob);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        const ctx = canvas.getContext('2d');
+        if (ctx === null) throw new Error('Counldn\'t get context');
+
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, img.width, img.height);
+
+        canvas.remove();
+
+        return data;
+    }
+
     private async convertToPAA (blob: Blob): Promise<Blob> {
-        // TODO
-        return blob;
+        const data = await this.blobToImageData(blob);
+        const arr = (await affPromise).encode(data);
+        return new Blob([arr], { type: 'image/vnd.paa' });
     }
 }
 </script>
