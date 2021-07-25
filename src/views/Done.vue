@@ -13,13 +13,15 @@
         <h2>Nächste Schritte</h2>
         <ol>
             <li>ZIP enpacken</li>
-                <!-- <li><code>logo.png</code> ist nur eine hochauflösende Kopie des Logos</li> -->
-                <li>Alle Bilder im Verzeichnis "mod" zu PAA konvertieren (z.B. mit <a href="https://paa.gruppe-adler.de" target="_blank">paa.gruppe-adler.de</a>)</li>
-                <li>Die konvertieren PAAs + die mod/mod.cpp in das Hauptverzeichnis deiner Mod schieben</li>
-                <li>
-                    <span>Falls du deinen Mod mit HEMTT baust sollten alle generierten Dateien in dem "files"-Feld in der "hemtt.toml"stehen:</span>
-                    <pre v-html="hemttFilesExample"></pre>
-                </li>
+            <!-- TODO: Proper Steps -->
+            <li v-if="!values.uploadedAdler"><code>pseudo_custom_adler.svg</code> ist nur eine hochauflösende Kopie des Adlers für dich</li>
+            <li><code>github_social_preview.png</code> kannst du <a :href="`https://github.com/gruppe-adler/${values.gitHubRepo}/settings`">hier</a> als "Social preview" einstellen</li>
+            <li><code>steam_logo.png</code> dient als Logo für den Workshop (kann mit dem Arma 3 Publisher verändert werden)</li>
+            <li>Alle Dateien im Verzeichnis <code>mod/</code> gehören in das Hauptverzeichnis deines Mods</li>
+            <li>
+                <span>Falls du deinen Mod mit HEMTT baust sollten alle generierten Dateien in dem "files"-Feld in der "hemtt.toml" stehen:</span>
+                <pre v-html="hemttFilesExample"></pre>
+            </li>
         </ol>
     </div>
     <div v-else>
