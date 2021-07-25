@@ -263,10 +263,15 @@ textarea, input {
     outline: none;
     border-radius: .25rem;
     padding: .5rem;
+    color: rgba(var(--color-text), 1);
     background-color: rgba(var(--color-text), .05);
 
     &:focus {
         background-color: rgba(var(--color-text), .1);
+    }
+
+    &::placeholder {
+        color: rgba(var(--color-text), 0.4);
     }
 }
 
