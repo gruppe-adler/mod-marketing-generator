@@ -15,7 +15,7 @@
             <li>ZIP enpacken</li>
             <!-- TODO: Proper Steps -->
             <li v-if="!values.uploadedAdler"><code>pseudo_custom_adler.svg</code> ist nur eine hochauflösende Kopie des Adlers für dich</li>
-            <li><code>github_social_preview.png</code> kannst du <a :href="`https://github.com/gruppe-adler/${values.gitHubRepo}/settings`">hier</a> als "Social preview" einstellen</li>
+            <li><code>github_social_preview.png</code> kannst du <a :href="`https://github.com/gruppe-adler/${values.gitHubRepo}/settings`" target="_blank">hier</a> als "Social preview" einstellen</li>
             <li><code>steam_logo.png</code> dient als Logo für den Workshop (kann mit dem Arma 3 Publisher verändert werden)</li>
             <li>Alle Dateien im Verzeichnis <code>mod/</code> gehören in das Hauptverzeichnis deines Mods</li>
             <li>
