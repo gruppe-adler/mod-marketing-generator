@@ -70,7 +70,7 @@ export default class Done extends Vue {
         if (!this.values.uploadedAdler) zip.file('pseudo_custom_adler.svg', customAdler);
 
         const blob = await zip.generateAsync({ type: 'blob' });
-        download(`${values.gitHubRepo}_marketing.zip`, blob);
+        download(`${this.values.gitHubRepo}_marketing.zip`, blob);
     }
 
     public created (): void {
